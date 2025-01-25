@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"math/rand/v2"
+	"math/rand"
 	"os"
 )
 
@@ -75,8 +75,8 @@ func CreateMathSheet() {
 	for i := 0; i < 10; i++ {
 
 		// the necessary variables
-		numberOne = rand.IntN(100)
-		numberTwo = rand.IntN(100)
+		numberOne = rand.Intn(100)
+		numberTwo = rand.Intn(100)
 		totalNumber = numberOne + numberTwo
 
 		// writes the file
@@ -87,14 +87,5 @@ func CreateMathSheet() {
 		}
 
 	}
-
-}
-
-func main() {
-	// creating a test document
-	// CreateTestDocument()
-
-	// creating a math sheet
-	CreateMathSheet()
 
 }
