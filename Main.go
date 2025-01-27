@@ -6,7 +6,9 @@ import (
 
 func main() {
 
-	operator := RandomOperator()
-	fmt.Println("Chosen operator:", operator)
+	finalResult := MathPerformer()
+	fmt.Println("Final Operation: ", finalResult)
+
+	GenerateSheet()
 
 }

@@ -26,3 +26,27 @@ func RandomNumber() (int, int) {
 	return numberOne, numberTwo
 
 }
+
+// function to perform the math
+func MathPerformer() int {
+
+	var totalNumber int
+
+	operator := RandomOperator()
+	numberOne, numberTwo := RandomNumber()
+
+	// swithcing between chosen operations
+	switch operator {
+	case "+":
+		totalNumber = numberOne + numberTwo
+	case "-":
+		totalNumber = numberOne - numberTwo
+	case "*":
+		totalNumber = numberOne * numberTwo
+	case "/":
+		totalNumber = numberOne / numberTwo
+	}
+
+	// returning the final operations
+	return totalNumber
+}
