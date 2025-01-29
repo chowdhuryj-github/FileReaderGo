@@ -1,3 +1,7 @@
+// this file is used for the following
+// GenerateSheet() is used to create a text file named "Math Sheet.txt"
+// WriteSh
+
 package main
 
 import (

@@ -6,9 +6,8 @@ import (
 
 func main() {
 
-	finalResult := MathPerformer()
-	fmt.Println("Final Operation: ", finalResult)
+	fmt.Println("Running the Program")
 
-	GenerateSheet()
+	CreateProblemSheet()
 
 }

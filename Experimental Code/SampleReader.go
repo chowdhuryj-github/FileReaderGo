@@ -66,6 +66,7 @@ func CreateMathSheet() {
 		panic(err)
 	}
 
+	// confirms files was generated
 	fmt.Print("Generated " + file.Name() + "\n")
 
 	var numberOne int
