@@ -3,10 +3,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io"
 	"math/rand"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -155,10 +156,15 @@ func WriteProblemSheet(fileName string) {
 }
 
 // function for writing to a already generated file
-func WriteAnswerSheet(fileName string) {
+func WriteAnswerSheet(answerFile string, problemFile string) {
 
-	// accessing the problem file
-	problemFile, err := os.Open(fileName)
+	// checking for presence of answer file
+	if _, err := os.Stat(answerFile); err == nil {
+		fmt.Println(answerFile + " exists!")
+	}
+
+	// opening up the problem file
+	fileTwo, err := os.Open(problemFile)
 
 	// error handling
 	if err != nil {
@@ -166,10 +172,10 @@ func WriteAnswerSheet(fileName string) {
 	}
 
 	// closing the file
-	defer problemFile.Close()
+	defer fileTwo.Close()
 
-	// accessing the answer file
-	answerFile, err := os.Open(fileName)
+	// opening up the answer file
+	fileOne, err := os.OpenFile(answerFile, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 
 	// error handling
 	if err != nil {
@@ -177,16 +183,117 @@ func WriteAnswerSheet(fileName string) {
 	}
 
 	// closing the file
-	defer answerFile.Close()
+	defer fileOne.Close()
 
-	// copying contents from problem to answer file
-	_, err = io.Copy(answerFile, problemFile)
+	for i := 0; i < 10; i++ {
+
+		// retrieving the contents of the file
+		num1, operator, num2, totalNumber := ReturnFileContents(problemFile)
+
+		// creating the math string
+		mathString := strconv.Itoa(num1) + " " + operator + " " + strconv.Itoa(num2) + " = " + strconv.Itoa(totalNumber)
+
+		// writing to the answer file
+		_, writeError := fileOne.WriteString(mathString + "\n")
+
+		// handling the error
+		if writeError != nil {
+			panic(writeError)
+		}
+
+	}
+}
+
+// func GeneratePDF(textFileOne string) {
+
+// 	// creating a PDF, adding a page and setting font
+// 	pdf := gofpdf.New("P", "mm", "A4", "")
+// 	pdf.AddPage()
+// 	pdf.SetFont("Arial", "B", 16)
+
+// 	// setting the cursor location
+// 	pdf.MoveTo(10, 10)
+
+// 	// setting the title and moving to the next line
+// 	pdf.Cell(190, 10, "Math Problems and Solutions")
+// 	pdf.Ln(10)
+
+// 	// setting the font for the body text
+// 	pdf.SetFont("Arial", "", 12)
+
+// 	// opening the text file and reading line by line
+// 	fileOne, err := os.Open(textFileOne)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	fileOne.Close()
+
+// }
+
+func ReturnFileContents(textFileOne string) (int, string, int, int) {
+
+	var num1 int
+	var num2 int
+	var operator string
+	var totalNumber int
+
+	// opening up the problem file
+	fileOne, err := os.Open(textFileOne)
 
 	// error handling
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Print("Contents successfully copied!")
+	// closing the file
+	defer fileOne.Close()
+
+	// reading the lines of the problem file
+	scanner := bufio.NewScanner(fileOne)
+	for scanner.Scan() {
+
+		// getting rid of the spaces and newlines
+		line := strings.TrimSpace(scanner.Text())
+
+		// printing out the raw line
+		fmt.Printf("Raw line: '%s'\n", strings.TrimSpace(scanner.Text()))
+
+		// using regex to find two numbers
+		re := regexp.MustCompile(`^(\d+)\s*([+\-*/])\s*(\d+)\s*=?$`)
+
+		// extracting the matches
+		match := re.FindStringSubmatch(line)
+
+		// error handling
+		if match == nil {
+			fmt.Println("Skipping invalid line:", line) // Debugging print
+			continue
+		}
+
+		// extracting the first number and error handling
+		num1, err := strconv.Atoi(match[1])
+		if err != nil {
+			panic(err)
+		}
+
+		// extracting the second number and error handling
+		num2, err := strconv.Atoi(match[3])
+		if err != nil {
+			panic(err)
+		}
+
+		// extracting the operator
+		operator := match[2]
+
+		// debugging print statement
+		fmt.Println("Extracted: ", num1, num2, operator)
+
+		// finding the final number
+		totalNumber = PerformMathOperation(num1, num2, operator)
+
+	}
+
+	return num1, operator, num2, totalNumber
 
 }

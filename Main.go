@@ -17,6 +17,6 @@ func main() {
 	// writing out the problem sheet
 	WriteProblemSheet(fileNameOne)
 	fmt.Println("Written to the Problem Sheet")
-	WriteAnswerSheet(fileNameTwo)
+	WriteAnswerSheet(fileNameTwo, fileNameOne)
 
 }
